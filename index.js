@@ -24,25 +24,27 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
-app.get("/api/:date?", function(req, res) {
-  let date;
-  if (req.params.date) {
-    const unixTimestamp = parseInt(req.params.date);
-    if (isNaN(unixTimestamp)) {
-      date = new Date(req.params.date);
-    } else {
-      date = new Date(unixTimestamp);
-    }
+app.get("/api/:date?", (req, res) => {
+  let dateInput = req.params.date;
+  let dateObject;
+
+  if (!dateInput) {
+    dateObject = new Date();
   } else {
-    date = new Date();
+    if (!isNaN(dateInput)) {
+      dateObject = new Date(parseInt(dateInput));
+    } else {
+      dateObject = new Date(dateInput);
+    }
   }
 
-  if (date.toString() === "Invalid Date") {
+  if (dateObject.toString() === "Invalid Date") {
     res.json({ error: "Invalid Date" });
   } else {
-    res.json({ unix: date.getTime(), utc: date.toUTCString() });
+    res.json({ unix: dateObject.getTime(), utc: dateObject.toUTCString() });
   }
 });
+
 
 
 
